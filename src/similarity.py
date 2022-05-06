@@ -43,3 +43,18 @@ def gini(array):
     n = array.shape[0]
     # Gini coefficient:
     return ((np.sum((2 * index - n - 1) * array)) / (n * np.sum(array)))
+
+
+torch_to_image(img, mean, std)
+
+def torch_to_image(tensor, mean=0, std=1):
+    """
+    Helper function to convert torch tensor containing input data into image.
+    """
+    if len(tensor.shape) == 4:
+        img = tensor.permute(0, 2, 3, 1)
+
+    img = img.contiguous().squeeze().detach().cpu().numpy()
+
+    img = img * std.reshape(1, 1, 3) + mean.reshape(1, 1, 3)
+    return np.clip(img, 0, 1)

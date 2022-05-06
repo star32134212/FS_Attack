@@ -1,0 +1,19 @@
+Formula
+
+1. Focus Shifting Attack
+L = \alpha\left \|  M\left ( x\right ) - E\left ( x_{adv} \right ) \right \|^{2} + \beta \left |  C_{logit} \left ( x_{adv} \right ) - C_{logit}\left ( x\right )  \right |
+
+2. gradient 關係
+R_{i}^c(x) = \left | \frac{\delta S_{c}(x)}{\delta x_{i}} \right |
+
+3. gradient x input
+R_{i}^c(x) =  \frac{\delta S_{c}(x)}{\delta x_{i}} \cdot x_{i}
+
+4. IG
+R_{i}^{c} = x_i\cdot \int_{\alpha = 0}^{1}\frac{\delta S_c(\tilde{x})}{\delta \tilde{x_i}} |_{\tilde{x}={x}'+\alpha (x-{x}')} d\alpha 
+
+5. MSE
+MSE = \frac{1}{hw}\sum_{i=1}^{h}\sum_{j=1}^{w}(x(i,j) - {x}'(i,y))^{2}
+
+
+
