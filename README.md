@@ -11,8 +11,7 @@ python exp_comparision.py --method "lrp" --n 50 --cuda --origin True
 
 python metric.py --img img_data/lrp_ori_map/1_ori_map.npy --adv_img img_data/lrp_adv_map/1_adv_map.npy
 
-### Experiment Version Info
-ver1 : ![ver1](https://user-images.githubusercontent.com/36884391/174763615-2a447f4e-bdeb-4607-aec7-a5d1079583b4.png =200x)
+
 
 
 
