@@ -5,10 +5,10 @@ import torch.nn.functional as F
 import numpy as np
 from PIL import Image
 
-from src.nn.enums import ExplainingMethod
-from src.nn.networks import ExplainableNet
-from src.nn.utils import get_expl, plot_overview, clamp, load_image, make_dir
-from src.nn.utils import get_center_attack_matrix, torch_to_image
+from nn.enums import ExplainingMethod
+from nn.networks import ExplainableNet
+from nn.utils import get_expl, plot_overview, clamp, load_image, make_dir
+from nn.utils import get_center_attack_matrix, torch_to_image
 
 
 def main():
