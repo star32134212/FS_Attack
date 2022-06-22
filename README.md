@@ -1,6 +1,5 @@
 # XAI_Attack
-paper work
-
+預設 dataset 路徑為 '/tf/datasets' (可在samples.samples.py修改)  
 
 
 
