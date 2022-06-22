@@ -149,24 +149,24 @@ def main():
                 count_3 += 1
         #print('mal','ori',count_3)  
         
-        adv_ori_95_path = args.F + "_1000/top95_data/adv_ori"
-        mal_adv_95_path = args.F + "_1000/top95_data/mal_adv"
-        mal_ori_95_path = args.F + "_1000/top95_data/mal_ori"
+        adv_ori_95_path = "output/" + args.F + "_1000/top95_data/adv_ori"
+        mal_adv_95_path = "output/" + args.F + "_1000/top95_data/mal_adv"
+        mal_ori_95_path = "output/" + args.F + "_1000/top95_data/mal_ori"
 
-        f = open(adv_ori_95_path, "a")
+        f = open(adv_ori_95_path, "a+")
         f.write(str(count_1))
         f.write(str('\n'))
         f.close()   
-        f = open(mal_adv_95_path, "a")
+        f = open(mal_adv_95_path, "a+")
         f.write(str(count_2))
         f.write(str('\n'))
         f.close()   
-        f = open(mal_ori_95_path, "a")
+        f = open(mal_ori_95_path, "a+")
         f.write(str(count_3))
         f.write(str('\n'))
         f.close()   
-        ori_expl_save_path = args.F + "_1000/ori_expl/" + str(args.num) + ".jpg"
-        adv_expl_save_path = args.F + "_1000/adv_expl/" + str(args.num) + ".jpg"
+        ori_expl_save_path = "output/" + args.F + "_1000/ori_expl/" + str(args.num) + ".jpg"
+        adv_expl_save_path = "output/" + args.F + "_1000/adv_expl/" + str(args.num) + ".jpg"
         save_expl(org_expl_cpu, filename=ori_expl_save_path, cm='seismic')
         save_expl(adv_expl_cpu, filename=adv_expl_save_path, cm='seismic')
         mask1 = adv_expl_np > np.percentile(adv_expl_np, args.topk - 5)
@@ -197,15 +197,15 @@ def main():
         mal_adv_90_path = args.F + "_1000/top90_data/mal_adv"
         mal_ori_90_path = args.F + "_1000/top90_data/mal_ori"
         
-        f = open(adv_ori_90_path, "a")
+        f = open(adv_ori_90_path, "a+")
         f.write(str(count_1))
         f.write(str('\n'))
         f.close()   
-        f = open(mal_adv_90_path, "a")
+        f = open(mal_adv_90_path, "a+")
         f.write(str(count_2))
         f.write(str('\n'))
         f.close()   
-        f = open(mal_ori_90_path, "a")
+        f = open(mal_ori_90_path, "a+")
         f.write(str(count_3))
         f.write(str('\n'))
         f.close()   
