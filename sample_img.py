@@ -13,4 +13,4 @@ indices = torch.randperm(len(ds.targets))[:img_number].numpy().astype(int) #щЪиц
 images_list, labels = [np.array(ds[i][0].resize((size,size)).convert('RGB')) for i in indices], [np.array(ds[i][1]) for i in indices]
 for i in range(len(images_list)):
     im = Image.fromarray(images_list[i])
-    im.save(f"img_data/data/{i+1}.jpeg")
+    im.save(f"tmp_image/{i+1}.jpeg")

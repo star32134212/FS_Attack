@@ -1,17 +1,17 @@
 # XAI_Attack
-預設 dataset 路徑為 '/tf/datasets' (可在samples.samples.py修改)  
+- 預設 dataset 路徑為 '/tf/datasets' (可在samples.samples.py修改)  
+- 預設從 dataset 中抽取圖片放到 tmp_image 底裡
 
+### 各檔案用途
+- FS_attack.py : 主要攻擊程式
+- metric.py : 計算 metric
+- sample_img.py : 用來從 dataset 抽圖片放到 tmp_image 底下
+- Experiment_ver7.ipynb : 最新版實驗
+- experiment_script : 存一些實驗用過的 script，要移到XAI_Attack資料夾下才能用
 
-
-python exp_comparision.py --method "lrp" --n 50 --cuda --origin True
-
-
-
-
-python metric.py --img img_data/lrp_ori_map/1_ori_map.npy --adv_img img_data/lrp_adv_map/1_adv_map.npy
-
-
-
+### 用法
+攻擊特定圖片 `python FS_attack.py --method "lrp" --n 100 --cuda --num 1 --dump True --origin True`  
+計算 metric 範例 `python metric.py --img output/lrp_1_ori_img.npy --adv_img output/lrp_1_adv_img.npy`  
 
 
 

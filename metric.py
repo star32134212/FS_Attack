@@ -10,8 +10,8 @@ import argparse
 
 def main():
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--img', type=str, default='img_data/ori_img/1_ori_img.npy')
-    argparser.add_argument('--adv_img', type=str, default='img_data/lrp_adv_img/1_adv_img.npy')
+    argparser.add_argument('--img', type=str, default='output/lrp_1_ori_img.npy')
+    argparser.add_argument('--adv_img', type=str, default='output/lrp_1_adv_img.npy')
     args = argparser.parse_args()
     
     im_orig = np.load(args.img)

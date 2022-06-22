@@ -27,10 +27,9 @@ def main():
     argparser.add_argument('--hyper1', type=float, default=1e4)
     argparser.add_argument('--hyper2', type=float, default=1e10)
     argparser.add_argument('--early_stop', type=bool, default=False)
+    argparser.add_argument('--topk', type=int, default=90)
     argparser.add_argument('--dump', type=bool, default=False)
-    argparser.add_argument('--topk', type=int, default=95)
     argparser.add_argument('--D', type=bool, default=False)
-    argparser.add_argument('--F', type=str, default="LRP")
     args = argparser.parse_args()
     print("epoch",args.n)
     method_list = ['gradient', 'grad_times_input', 'integrated_grad', 'lrp', 'guided_backprop']
@@ -52,23 +51,12 @@ def main():
     img = 'tmp_image/' + str(args.num) + '.jpeg'
     # load images
     x = load_image(data_mean, data_std, device, img)
-    #print('x.device',x.device)
     # predict
     predictions = model(x)
     predictions = predictions.cpu().detach().numpy()
     prediction_class = np.argmax(predictions[0])
-    print("Prediction class: " + str(prediction_class))  # Should be a doberman, class idx = 236
-    # 存分類分數前兩高的差距
-    #if args.dump == True:
-        #value_sort = np.sort(predictions[0])[::-1]
-        #print('value_sort[:2][0] - value_sort[:2][1]', value_sort[:2][0], value_sort[:2][1])
-        #score_diff = value_sort[:2][0] - value_sort[:2][1]
-        #print('dump score diff:',score_diff)
-        #f = open("score_diff", "a")
-        #f.write(str(score_diff))
-        #f.write('\n')
-        #f.close()
-        
+    print("Prediction class: " + str(prediction_class)) 
+
     exp_method = args.method
     method = getattr(ExplainingMethod, exp_method)
     org_expl, org_acc, org_idx = get_expl(model, x, method)
@@ -92,7 +80,6 @@ def main():
         # calculate loss
         adv_expl, adv_acc, class_idx = get_expl(model, x_adv, method, desired_index=org_idx)
         loss_center = F.mse_loss(adv_expl, target_mtx_torch)
-        #loss_output = F.mse_loss(adv_acc[0][prediction_class], org_acc[0][prediction_class].detach())
         loss_output = F.mse_loss(adv_acc[0][prediction_class], org_acc[0][prediction_class].detach())
         #loss_output = F.mse_loss(adv_acc, org_acc.detach())
         total_loss = prefactors[0]*loss_output + prefactors[1]*loss_center
@@ -105,7 +92,7 @@ def main():
         prediction_class_tmp = np.argmax(predictions[0])
 
         if(prediction_class_tmp != prediction_class):
-            print(i,'early stop ------------------------------------')
+            print(i,'early stop')
             early_stop_epoch = i
             if args.early_stop == True:
                 x_adv = x_tmp
@@ -120,6 +107,18 @@ def main():
     model.change_beta(None)
     adv_expl, adv_acc, class_idx = get_expl(model, x_adv, method)
 
+    # save original image
+    if args.origin == True:
+        x_image = torch_to_image(x, data_mean, data_std)
+        save_path = "output/" + args.method + "_" + str(args.num) + "_ori_img.npy"
+        np.save(save_path, x_image)
+
+    # save adv image
+    x_adv_image = torch_to_image(x_adv, data_mean, data_std)
+    save_path = "output/" + args.method + "_" + str(args.num) + "_adv_img.npy"
+    np.save(save_path, x_adv_image)    
+
+    # save image and data
     if args.dump == True:   
         adv_expl_cpu = adv_expl.detach().cpu()
         org_expl_cpu = org_expl.detach().cpu()        
@@ -135,81 +134,42 @@ def main():
         for i in range(len(mask1_1d)):       
             if mask1_1d[i] == True and mask2_1d[i] == True:
                 count_1 += 1
-        #print('adv','ori',count_1)
-
         count_2 = 0
         for i in range(len(mask1_1d)):       
             if mask3_1d[i] == True and mask1_1d[i] == True:
                 count_2 += 1
-        #print('mal','adv',count_2)
-
         count_3 = 0
         for i in range(len(mask1_1d)):       
             if mask3_1d[i] == True and mask2_1d[i] == True:
                 count_3 += 1
-        #print('mal','ori',count_3)  
         
-        adv_ori_95_path = "output/" + args.F + "_1000/top95_data/adv_ori"
-        mal_adv_95_path = "output/" + args.F + "_1000/top95_data/mal_adv"
-        mal_ori_95_path = "output/" + args.F + "_1000/top95_data/mal_ori"
-
-        f = open(adv_ori_95_path, "a+")
+        adv_ori_path = "output/" + args.method + "_adv_ori"
+        mal_adv_path = "output/" + args.method + "_mal_adv"
+        mal_ori_path = "output/" + args.method + "_mal_ori"
+        score_diff_path = "output/score_diff"
+        
+        value_sort = np.sort(predictions[0])[::-1]
+        score_diff = value_sort[:2][0] - value_sort[:2][1]
+        f = open(score_diff_path, "a+")   # save difference between the highest and second high prediction score
+        f.write(str(score_diff))
+        f.write('\n')
+        f.close()        
+        f = open(adv_ori_path, "a+") # save adv/ori
         f.write(str(count_1))
         f.write(str('\n'))
         f.close()   
-        f = open(mal_adv_95_path, "a+")
+        f = open(mal_adv_path, "a+") # save mal adv
         f.write(str(count_2))
         f.write(str('\n'))
         f.close()   
-        f = open(mal_ori_95_path, "a+")
+        f = open(mal_ori_path, "a+") # save mal ori
         f.write(str(count_3))
         f.write(str('\n'))
         f.close()   
-        ori_expl_save_path = "output/" + args.F + "_1000/ori_expl/" + str(args.num) + ".jpg"
-        adv_expl_save_path = "output/" + args.F + "_1000/adv_expl/" + str(args.num) + ".jpg"
+        ori_expl_save_path = "output/" + args.method + "_" + str(args.num) + "_ori_expl.jpg"
+        adv_expl_save_path = "output/" + args.method + "_" + str(args.num) + "_adv_expl.jpg"
         save_expl(org_expl_cpu, filename=ori_expl_save_path, cm='seismic')
         save_expl(adv_expl_cpu, filename=adv_expl_save_path, cm='seismic')
-        mask1 = adv_expl_np > np.percentile(adv_expl_np, args.topk - 5)
-        mask2 = org_expl_np > np.percentile(org_expl_np, args.topk - 5)
-        mask3 = target_mtx > np.percentile(target_mtx, args.topk - 5)
-        mask1_1d = mask1[0].flatten()
-        mask2_1d = mask2[0].flatten()
-        mask3_1d = mask3.flatten()
-        count_1 = 0
-        for i in range(len(mask1_1d)):       
-            if mask1_1d[i] == True and mask2_1d[i] == True:
-                count_1 += 1
-        #print('adv','ori',count_1)
-
-        count_2 = 0
-        for i in range(len(mask1_1d)):       
-            if mask3_1d[i] == True and mask1_1d[i] == True:
-                count_2 += 1
-        #print('mal','adv',count_2)
-
-        count_3 = 0
-        for i in range(len(mask1_1d)):       
-            if mask3_1d[i] == True and mask2_1d[i] == True:
-                count_3 += 1
-        #print('mal','ori',count_3)  
-
-        adv_ori_90_path = args.F + "_1000/top90_data/adv_ori"
-        mal_adv_90_path = args.F + "_1000/top90_data/mal_adv"
-        mal_ori_90_path = args.F + "_1000/top90_data/mal_ori"
-        
-        f = open(adv_ori_90_path, "a+")
-        f.write(str(count_1))
-        f.write(str('\n'))
-        f.close()   
-        f = open(mal_adv_90_path, "a+")
-        f.write(str(count_2))
-        f.write(str('\n'))
-        f.close()   
-        f = open(mal_ori_90_path, "a+")
-        f.write(str(count_3))
-        f.write(str('\n'))
-        f.close()   
-
  
 if __name__ == "__main__":
     main()
