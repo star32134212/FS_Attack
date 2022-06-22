@@ -17,5 +17,5 @@
 
 
 ### 其他連結  
-論文投影片 [link](https://docs.google.com/presentation/d/1eYiIPxz3XbZTnGIBF7jJyTPh-5j0uQ7gvi-614u6XvI/edit?usp=sharing)  
-CISC演討會版本 [link](https://drive.google.com/file/d/1gtsMByaNR0fkLKrY2suWaXY2mf6gVOcj/view?usp=sharing)  
+論文投影片 [[link]](https://docs.google.com/presentation/d/1eYiIPxz3XbZTnGIBF7jJyTPh-5j0uQ7gvi-614u6XvI/edit?usp=sharing)  
+CISC演討會版本 [[link]](https://drive.google.com/file/d/1gtsMByaNR0fkLKrY2suWaXY2mf6gVOcj/view?usp=sharing)  
