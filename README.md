@@ -1,4 +1,4 @@
-# XAI_Attack
+# FS_Attack
 - 預設 dataset 路徑為 '/tf/datasets' (可在samples.samples.py修改)  
 - 預設從 dataset 中抽取圖片放到 tmp_image 底裡
 
